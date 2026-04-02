@@ -1,0 +1,160 @@
+import numpy as np
+
+# ============================================================
+# NumPy Practice - AI/ML Foundation
+# ============================================================
+
+
+# ------------------------------------------------------------
+# Q1: Array Creation & Shape
+# Task: Create array from 1 to 20, print its shape
+# Concept: np.arange creates evenly spaced values
+# ------------------------------------------------------------
+
+num = np.arange(1, 21)           # 1 to 20 inclusive
+print("Array:", num)
+print("Shape:", num.shape)        # (20,) — 1D array, 20 elements
+
+
+# ------------------------------------------------------------
+# Q2: Reshape — 1D to 2D (ML: samples x features)
+# Task: Reshape into 4 samples, 5 features
+# Concept: In ML, rows = samples, columns = features
+# ------------------------------------------------------------
+
+mat = num.reshape(4, 5)
+print("\nReshaped Matrix (4x5):\n", mat)
+print("Shape:", mat.shape)        # (4, 5)
+
+
+# ------------------------------------------------------------
+# Q3: Chained Reshape — Weight Matrix
+# Task: Create 3x3 matrix from 1-9 in one line
+# Concept: Weight matrices in neural networks
+# ------------------------------------------------------------
+
+weight = np.arange(1, 10).reshape(3, 3)
+print("\nWeight Matrix (3x3):\n", weight)
+
+
+# ------------------------------------------------------------
+# Q4: Multiple Reshapes — Image Pixels
+# Task: Reshape 12 pixel values into 2x6 and 3x4
+# Concept: Image data is reshaped for different CNN layers
+# ------------------------------------------------------------
+
+dataset = np.arange(1, 13)
+m = dataset.reshape(2, 6)
+print("\nPixel Matrix (2x6):\n", m)
+
+n = np.reshape(dataset, (3, 4))
+print("Pixel Matrix (3x4):\n", n)
+
+
+# ------------------------------------------------------------
+# Q5: Slicing & Boolean Indexing
+# Task: Find students who scored > 60
+# Concept: Filtering data points / removing outliers in ML
+# ------------------------------------------------------------
+
+scores = np.array([45, 78, 62, 90, 55, 88, 71, 39, 95, 60])
+
+# Last 4 scores (reversed)
+print("\nLast 4 scores (reversed):", scores[-4:][::-1])
+
+# Students who passed (score > 60)
+passed = scores[scores > 60]
+print("Passed students scores:", passed)
+print("Pass count:", (scores > 60).sum())   # True=1, False=0
+
+
+# ------------------------------------------------------------
+# Q6: Axis Operations — Subject Marks
+# Task: Row-wise average (per student), column-wise max (per subject)
+# Concept: axis=1 → row-wise, axis=0 → column-wise
+# ------------------------------------------------------------
+
+marks = np.array([
+    [50, 80, 90, 60],
+    [70, 40, 55, 85],
+    [90, 95, 88, 72]
+])
+
+print("\nAverage per student (row-wise):", np.mean(marks, axis=1).round(2))
+print("Average per subject (col-wise):", np.mean(marks, axis=0).round(2))
+print("Highest per subject:", np.max(marks, axis=0))
+
+
+# ------------------------------------------------------------
+# Q7: Boolean Replacement — Faulty Sensor Readings
+# Task: Replace values > 8 with 0
+# Concept: Data cleaning — removing corrupt/faulty values
+# ------------------------------------------------------------
+
+readings = np.arange(1, 13).reshape(3, 4)
+readings[readings > 8] = 0        # in-place modification
+print("\nCleaned Readings:\n", readings)
+
+
+# ------------------------------------------------------------
+# Q8: Grade Classifier — np.where + Boolean Indexing
+# Task: Classify students as Pass/Fail, count each
+# Concept: Label generation for classification tasks (y_train)
+# ------------------------------------------------------------
+
+student_data = np.array([
+    [85, 92, 78, 90],
+    [45, 55, 40, 60],
+    [70, 68, 75, 80],
+    [30, 25, 40, 35],
+    [95, 88, 92, 97]
+])
+
+avg = np.mean(student_data, axis=1)
+grades = np.where(avg >= 70, "Pass", "Fail")
+
+print("\nStudent Averages:", avg)
+print("Grades:", grades)
+print("Class Average:", np.mean(avg).round(2))
+print("Pass Students Avg:", np.mean(avg[avg >= 70]).round(2))
+print("Pass Count:", (grades == "Pass").sum())
+print("Fail Count:", (grades == "Fail").sum())
+print("Pass Students Averages:", avg[avg >= 70])
+
+
+# ------------------------------------------------------------
+# Q9: House Price Analysis — argmax, argwhere, normalization
+# Task: Most expensive house location, city averages,
+#       cities with house > 300, normalize prices
+# Concept: Feature scaling — essential before ML model training
+# ------------------------------------------------------------
+
+prices = np.array([
+    [120,  85, 200, 150,  95],
+    [300,  45, 180, 220, 110],
+    [ 75,  95, 400, 130, 160],
+    [250, 310,  88, 175,  90],
+    [140, 195, 265,  80, 320]
+])
+
+# Most expensive house — location
+max_idx = np.argmax(prices)                          # flattened index
+row, col = np.unravel_index(max_idx, prices.shape)   # convert to row, col
+print("\nMost Expensive House:")
+print(f"  Price: {prices[row][col]} lakhs | Row: {row}, Col: {col}")
+
+# Average price per city (row-wise)
+city_avg = np.mean(prices, axis=1).round(2)
+print("City Averages:", city_avg)
+
+# Cities with at least one house > 300 lakhs
+expensive_cities = np.where((prices > 300).any(axis=1))[0]
+print("Cities with house > 300 lakhs (row indices):", expensive_cities)
+
+# All locations where price > 300
+print("Locations (row, col) with price > 300:\n", np.argwhere(prices > 300))
+
+# Normalize prices between 0 and 1 — Min-Max Scaling
+# Formula: (x - min) / (max - min)
+normalized = (prices - np.min(prices)) / (np.max(prices) - np.min(prices))
+print("Normalized Prices:\n", normalized.round(4))
